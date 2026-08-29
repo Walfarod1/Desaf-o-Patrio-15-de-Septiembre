@@ -173,7 +173,9 @@ document.getElementById('btn-join-game').addEventListener('click', () => {
     }
 });
 
-// [MÓDULO JS 6: Lógica de Evaluación de Respuestas del Gamepad Móvil]
+// ==========================================================================
+// [MÓDULO JS 6: Lógica de Evaluación de Respuestas y Persistencia Garantizada]
+// ==========================================================================
 document.querySelectorAll('#gamepad-grid .btn-kahoot').forEach(btn => {
     btn.addEventListener('click', () => {
         const choice = parseInt(btn.getAttribute('data-choice'));
@@ -201,9 +203,14 @@ function submitPlayerAnswer(choiceIndex) {
     // Actualizar puntaje local en pantalla móvil
     document.getElementById('player-score-tag').textContent = playerScore;
 
-    // Persistir puntaje y respuesta enviada en Firebase Realtime DB
+    // Persistir puntaje, nombre y equipo garantizados usando .update() en Firebase
     if (db) {
-        db.ref('players/' + playerId + '/score').set(playerScore);
+        db.ref('players/' + playerId).update({
+            name: playerName,
+            team: selectedTeam,
+            score: playerScore
+        });
+
         db.ref('answers/' + currentQuestionIndex + '/' + playerId).set({
             choice: choiceIndex,
             correct: isCorrect,
@@ -211,7 +218,7 @@ function submitPlayerAnswer(choiceIndex) {
         });
     }
 
-    // Renderizar feedback visual en el modal del celular
+    // Renderizar feedback visual en el celular
     const modal = document.getElementById('modal-player-feedback');
     const img = document.getElementById('player-feedback-img');
     const title = document.getElementById('player-feedback-title');
@@ -319,25 +326,29 @@ document.getElementById('btn-host-reset-now').addEventListener('click', () => {
 });
 
 // ==========================================================================
-// [MÓDULO JS 8: Cálculo de Promedios, Rotación Dinámica de Banderas y Podio]
+// [MÓDULO JS 8: Cálculo de Promedios, Carga de Banderas y Podio en Vivo]
 // ==========================================================================
+
 function showHostResults() {
     const q = questions[currentQuestionIndex];
     document.getElementById('host-fact-text').textContent = q.fact;
     document.getElementById('host-correct-answer-text').textContent = q.options[q.answer];
 
-    // Rotación secuencial entre Bandera, Bandera2, Bandera3, Bandera4, Bandera5 y Bandera6
+    // Rotación e intercambio inteligente de imágenes de banderas
     const heroImg = document.getElementById('host-hero-img');
     if (heroImg) {
         const currentPath = flagImages[currentFlagIndex];
         heroImg.src = currentPath;
 
-        // Fallback en minúsculas por si la extensión o nombre en GitHub Pages difiere
-        heroImg.onerror = () => {
-            heroImg.src = currentPath.toLowerCase();
+        // Recuperación automática si el nombre del archivo en GitHub difiere en mayúsculas/minúsculas
+        heroImg.onerror = function() {
+            if (this.src.includes("Bandera.png")) this.src = "Assets/bandera.png";
+            else if (this.src.includes("bandera.png")) this.src = "Assets/Bandera.png";
+            else if (this.src.includes("Bandera")) this.src = this.src.replace("Bandera", "bandera");
+            else if (this.src.includes("bandera")) this.src = this.src.replace("bandera", "Bandera");
         };
 
-        // Avanzar cíclicamente al siguiente índice (0 a 5)
+        // Avanzar cíclicamente en el índice (0 a 5)
         currentFlagIndex = (currentFlagIndex + 1) % flagImages.length;
     }
 
@@ -361,8 +372,9 @@ function calculateTeamAverages(playersObject) {
 
     Object.keys(playersObject).forEach(key => {
         const p = playersObject[key];
-        if (teamData[p.team]) {
-            teamData[p.team].totalScore += p.score;
+        // Validar que el jugador tenga equipo asignado
+        if (p && p.team && teamData[p.team]) {
+            teamData[p.team].totalScore += (p.score || 0);
             teamData[p.team].count += 1;
         }
     });
