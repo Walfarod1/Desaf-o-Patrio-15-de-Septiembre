@@ -51,7 +51,9 @@ const kahootStyles = [
     { class: 'btn-green', icon: '◼' }
 ];
 
-// [MÓDULO JS 2: Variables de Estado Global]
+// ==========================================================================
+// [MÓDULO JS 2: Variables de Estado Global, Assets y Secuencia de Banderas]
+// ==========================================================================
 let userRole = "player";
 let playerName = "";
 let selectedTeam = "";
@@ -61,6 +63,17 @@ let currentQuestionIndex = 0;
 let timer = null;
 let timeLeft = 15;
 let confettiAnimationId = null;
+
+// Índice de control para rotar imágenes de banderas
+let currentFlagIndex = 0;
+const flagImages = [
+    "Assets/bandera.png",
+    "Assets/Bandera2.png",
+    "Assets/Bandera3.png",
+    "Assets/Bandera4.png",
+    "Assets/Bandera5.png",
+    "Assets/Bandera6.png"
+];
 
 // [MÓDULO JS 3: Inicialización Firebase DB Sync - Producción Realtime]
 const firebaseConfig = {
@@ -225,66 +238,6 @@ function resetGamepadUI() {
     document.getElementById('gamepad-grid').classList.remove('hidden');
 }
 
-// [MÓDULO JS 6: Gamepad Táctil de Celular]
-document.querySelectorAll('#gamepad-grid .btn-kahoot').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const choice = parseInt(btn.getAttribute('data-choice'));
-        submitPlayerAnswer(choice);
-    });
-});
-
-function submitPlayerAnswer(choiceIndex) {
-    document.getElementById('gamepad-grid').classList.add('hidden');
-    document.getElementById('gamepad-waiting').classList.remove('hidden');
-
-    const q = questions[currentQuestionIndex];
-    const isCorrect = (choiceIndex === q.answer);
-    
-    let earned = 0;
-    if (isCorrect) {
-        const basePts = levelConfigs[q.level].points;
-        let bonus = (timeLeft > 10) ? 50 : (timeLeft > 5 ? 25 : 0);
-        earned = basePts + bonus;
-        playerScore += earned;
-    }
-
-    document.getElementById('player-score-tag').textContent = playerScore;
-
-    if (db) {
-        db.ref('players/' + playerId + '/score').set(playerScore);
-        db.ref('answers/' + currentQuestionIndex + '/' + playerId).set({
-            choice: choiceIndex,
-            correct: isCorrect,
-            earned: earned
-        });
-    }
-
-    const modal = document.getElementById('modal-player-feedback');
-    const img = document.getElementById('player-feedback-img');
-    const title = document.getElementById('player-feedback-title');
-    const sub = document.getElementById('player-feedback-sub');
-
-    if (isCorrect) {
-        img.src = "Assets/Bien.png";
-        title.textContent = "¡CORRECTO!";
-        title.className = "modal-title correct";
-        sub.textContent = `+${earned} pts`;
-    } else {
-        img.src = "Assets/Mal.png";
-        title.textContent = "¡CASI, MAE!";
-        title.className = "modal-title incorrect";
-        sub.textContent = `Era: ${q.options[q.answer]}`;
-    }
-
-    modal.classList.remove('hidden');
-}
-
-function resetGamepadUI() {
-    document.getElementById('modal-player-feedback').classList.add('hidden');
-    document.getElementById('gamepad-waiting').classList.add('hidden');
-    document.getElementById('gamepad-grid').classList.remove('hidden');
-}
-
 // [MÓDULO JS 7: Lógica del Proyector (Host) y Control de Reinicio Instantáneo]
 function initHostGame() {
     // 1. Detener cualquier temporizador que esté corriendo
@@ -365,19 +318,27 @@ document.getElementById('btn-host-reset-now').addEventListener('click', () => {
     }
 });
 
-// [MÓDULO JS 8: Cálculo de Promedios, Carga Tolerante de Assets y Podio Intermedio]
+// ==========================================================================
+// [MÓDULO JS 8: Cálculo de Promedios, Rotación Dinámica de Banderas y Podio]
+// ==========================================================================
 function showHostResults() {
     const q = questions[currentQuestionIndex];
     document.getElementById('host-fact-text').textContent = q.fact;
     document.getElementById('host-correct-answer-text').textContent = q.options[q.answer];
 
+    // Rotación secuencial entre Bandera, Bandera2, Bandera3, Bandera4, Bandera5 y Bandera6
     const heroImg = document.getElementById('host-hero-img');
     if (heroImg) {
-        heroImg.src = "Assets/bandera.png";
-        // Mecanismo de respaldo contra insensibilidad a mayúsculas en servidores Linux
+        const currentPath = flagImages[currentFlagIndex];
+        heroImg.src = currentPath;
+
+        // Fallback en minúsculas por si la extensión o nombre en GitHub Pages difiere
         heroImg.onerror = () => {
-            heroImg.src = "Assets/Bandera.png";
+            heroImg.src = currentPath.toLowerCase();
         };
+
+        // Avanzar cíclicamente al siguiente índice (0 a 5)
+        currentFlagIndex = (currentFlagIndex + 1) % flagImages.length;
     }
 
     if (db) {
