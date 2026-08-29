@@ -1,4 +1,6 @@
-/* [MÓDULO CSS 1: Variables de Sistema y Paleta Kahoot-Patria] */
+/* ==========================================================================
+   [MÓDULO CSS 1: Variables de Sistema y Paleta Kahoot-Patria]
+   ========================================================================== */
 :root {
     --color-red: #E21B3C;
     --color-blue: #1368CE;
@@ -17,29 +19,38 @@
     --font-main: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* [MÓDULO CSS 2: Reset Base y Reglas Inquebrantables de Visibilidad] */
+/* ==========================================================================
+   [MÓDULO CSS 2: Reset Base y Reglas Inquebrantables de Visibilidad y Scroll]
+   ========================================================================== */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-body {
+html, body {
+    width: 100%;
+    min-height: 100vh;
+    height: auto;
     font-family: var(--font-main);
     background-color: var(--bg-dark);
     color: var(--text-dark);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto; /* Habilita el desplazamiento vertical global */
     position: relative;
 }
 
-.hidden { display: none !important; }
-.active { display: flex !important; }
+.hidden { 
+    display: none !important; 
+}
 
-/* [MÓDULO CSS 3: Fondo Animado Bandera de Costa Rica Full-Page (Alta Definición y Dinamismo)] */
+.active { 
+    display: flex !important; 
+}
+
+/* ==========================================================================
+   [MÓDULO CSS 3: Fondo Animado Bandera de Costa Rica Full-Page (Alta Definición)]
+   ========================================================================== */
 .bg-flag-layer {
     position: fixed;
     top: -10%;
@@ -96,42 +107,58 @@ body {
     }
 }
 
-
-/* [MÓDULO CSS 4: Layout General y Tarjeta Principal con Selección] */
+/* ==========================================================================
+   [MÓDULO CSS 4: Layout General y Tarjeta Principal con Desplazamiento Seguro]
+   ========================================================================== */
 .app-container {
     width: 100%;
     max-width: 1400px;
-    height: 100%;
+    min-height: 100vh;
+    height: auto;
     position: relative;
     z-index: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 15px;
 }
 
 .screen {
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
+    height: auto;
     flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .welcome-box {
     position: relative;
-    margin: auto;
+    margin: 20px auto 40px auto;
     background: var(--card-bg);
-    padding: 3.5rem 3rem 2.5rem 3rem;
+    padding: 2.5rem 2rem 2rem 2rem;
     border-radius: 24px;
     box-shadow: 0 25px 50px rgba(0,0,0,0.45);
     text-align: center;
     max-width: 920px;
-    width: 95%;
+    width: 100%;
     border-top: 10px solid var(--color-azul-patrio);
 }
 
 .btn-discreet-host {
-    position: absolute; top: 18px; right: 20px;
-    background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1;
-    border-radius: 20px; padding: 6px 14px; font-size: 0.82rem; font-weight: 700;
-    cursor: pointer; transition: all 0.2s ease;
+    position: absolute; 
+    top: 18px; 
+    right: 20px;
+    background: #f1f5f9; 
+    color: #64748b; 
+    border: 1px solid #cbd5e1;
+    border-radius: 20px; 
+    padding: 6px 14px; 
+    font-size: 0.82rem; 
+    font-weight: 700;
+    cursor: pointer; 
+    transition: all 0.2s ease;
 }
 .btn-discreet-host:hover { background: #e2e8f0; color: var(--color-azul-patrio); border-color: var(--color-blue); }
 
@@ -142,58 +169,118 @@ body {
 .input-label { display: block; text-align: left; font-weight: 800; margin-bottom: 8px; color: #333; font-size: 1.05rem; }
 
 .form-group input {
-    width: 100%; padding: 18px 20px; font-size: 1.3rem; text-align: center;
-    border: 3px solid #cbd5e1; border-radius: 14px; margin-bottom: 25px; font-weight: bold;
+    width: 100%; 
+    padding: 18px 20px; 
+    font-size: 1.3rem; 
+    text-align: center;
+    border: 3px solid #cbd5e1; 
+    border-radius: 14px; 
+    margin-bottom: 25px; 
+    font-weight: bold;
     transition: border-color 0.2s;
 }
 .form-group input:focus { border-color: var(--color-blue); outline: none; }
 
 .instruction { font-weight: 800; margin-bottom: 16px; text-align: left; color: #333; font-size: 1.1rem; }
 
-.teams-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 30px; }
+.teams-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 18px; 
+    margin-bottom: 30px; 
+}
 
 .team-btn {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 22px 15px; border: 3px solid #e2e8f0; border-radius: 18px; background: #ffffff;
-    cursor: pointer; font-weight: 800; transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); gap: 12px;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+    padding: 22px 15px; 
+    border: 3px solid #e2e8f0; 
+    border-radius: 18px; 
+    background: #ffffff;
+    cursor: pointer; 
+    font-weight: 800; 
+    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    gap: 12px;
 }
 .team-btn span { font-size: 1.15rem; color: #222; font-weight: 800; }
 
 .team-card-img {
-    width: 105px; height: 105px; object-fit: cover; border-radius: 50%;
-    border: 4px solid var(--color-blue); background: #f8fafc; box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    width: 105px; 
+    height: 105px; 
+    object-fit: cover; 
+    border-radius: 50%;
+    border: 4px solid var(--color-blue); 
+    background: #f8fafc; 
+    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
     transition: transform 0.2s ease;
 }
 
 .team-btn:hover .team-card-img { transform: scale(1.08); }
 
 .team-btn.selected {
-    background-color: #eef4ff; border-color: var(--color-blue); transform: translateY(-4px);
+    background-color: #eef4ff; 
+    border-color: var(--color-blue); 
+    transform: translateY(-4px);
     box-shadow: 0 12px 25px rgba(19, 104, 206, 0.3);
 }
 .team-btn.selected span { color: var(--color-blue); font-weight: 900; }
 
 .btn-enter {
-    width: 100%; padding: 20px; font-size: 1.45rem; font-weight: 900; border-radius: 14px;
-    background: var(--color-green); color: white; border: none; cursor: pointer;
-    box-shadow: 0 6px 0 #1b6308; transition: transform 0.1s, background-color 0.2s; letter-spacing: 0.5px;
+    width: 100%; 
+    padding: 20px; 
+    font-size: 1.45rem; 
+    font-weight: 900; 
+    border-radius: 14px;
+    background: var(--color-green); 
+    color: white; 
+    border: none; 
+    cursor: pointer;
+    box-shadow: 0 6px 0 #1b6308; 
+    transition: transform 0.1s, background-color 0.2s; 
+    letter-spacing: 0.5px;
 }
 .btn-enter:disabled { background: #cbd5e1; box-shadow: 0 6px 0 #94a3b8; cursor: not-allowed; }
 .btn-enter:not(:disabled):hover { background-color: #2da10e; }
 .btn-enter:not(:disabled):active { transform: translateY(4px); box-shadow: 0 2px 0 #1b6308; }
 
-/* [MÓDULO CSS 5: Gamepad Móvil táctil] */
+/* ==========================================================================
+   [MÓDULO CSS 5: Gamepad Móvil Táctil e Interfaz de Respuesta]
+   ========================================================================== */
 .mobile-header {
-    display: flex; justify-content: space-between; padding: 15px 20px;
-    background: white; font-weight: 800; font-size: 1.1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    display: flex; 
+    justify-content: space-between; 
+    padding: 15px 20px;
+    background: white; 
+    font-weight: 800; 
+    font-size: 1.1rem; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 12px 12px 0 0;
 }
 
-.kahoot-grid-gamepad { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; flex-grow: 1; }
+.kahoot-grid-gamepad { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 15px; 
+    padding: 15px 0; 
+    width: 100%;
+    min-height: 60vh;
+}
 
 .btn-kahoot {
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2.2rem; font-weight: bold; color: white; border: none; border-radius: 12px;
-    cursor: pointer; box-shadow: 0 8px 0 rgba(0,0,0,0.3); transition: transform 0.1s;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 2.2rem; 
+    font-weight: bold; 
+    color: white; 
+    border: none; 
+    border-radius: 12px;
+    cursor: pointer; 
+    box-shadow: 0 8px 0 rgba(0,0,0,0.3); 
+    transition: transform 0.1s;
 }
 .btn-kahoot:active { transform: translateY(8px); box-shadow: none; }
 
@@ -204,10 +291,18 @@ body {
 
 .waiting-box { margin: auto; background: white; padding: 30px; border-radius: 16px; text-align: center; }
 
-/* [MÓDULO CSS 6: Cabecera Proyector y Pregunta] */
+/* ==========================================================================
+   [MÓDULO CSS 6: Cabecera Proyector y Estructura de Preguntas]
+   ========================================================================== */
 .game-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 15px 30px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px);
+    width: 100%;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 15px 30px; 
+    background: rgba(255, 255, 255, 0.95); 
+    backdrop-filter: blur(5px);
+    border-radius: 12px;
 }
 .question-counter { font-size: 1.2rem; font-weight: bold; color: #555; background: #eef2f7; padding: 6px 18px; border-radius: 20px; }
 .header-center h3 { font-size: 1.2rem; color: var(--color-azul-patrio); font-weight: 800; }
@@ -218,19 +313,22 @@ body {
     font-size: 1.6rem; font-weight: 900; box-shadow: 0 0 0 5px rgba(19, 104, 206, 0.25);
 }
 
-.question-container { flex-grow: 1; display: flex; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+.question-container { flex-grow: 1; display: flex; justify-content: center; align-items: center; padding: 20px; text-align: center; width: 100%; }
 #host-question-title { 
     font-size: 2.3rem; font-weight: 900; background: rgba(255, 255, 255, 0.96); padding: 30px 40px; 
     border-radius: 14px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); max-width: 950px; width: 100%;
 }
 
-.kahoot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; height: 42vh; }
-.game-footer { display: flex; justify-content: space-between; padding: 12px 25px; background: white; font-weight: bold; color: #444; }
+.kahoot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; width: 100%; height: 42vh; }
+.game-footer { width: 100%; display: flex; justify-content: space-between; padding: 12px 25px; background: white; font-weight: bold; color: #444; border-radius: 12px; }
 
-/* [MÓDULO CSS 7: Split-Screen Proyector] */
+/* ==========================================================================
+   [MÓDULO CSS 7: Split-Screen Proyector y Resultados Intermedios]
+   ========================================================================== */
 .modal-overlay {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(4, 12, 26, 0.88); justify-content: center; align-items: center; z-index: 100; padding: 20px;
+    overflow-y: auto;
 }
 
 .modal-card-fullscreen {
@@ -272,7 +370,9 @@ body {
 .modal-card-mobile { background: white; padding: 35px 25px; border-radius: 24px; text-align: center; max-width: 440px; width: 90%; }
 .modal-feedback-img { width: 120px; height: 120px; object-fit: contain; margin-bottom: 12px; }
 
-/* [MÓDULO CSS 8: GRAN PODIO FINAL 3D Y CELEBRACIÓN] */
+/* ==========================================================================
+   [MÓDULO CSS 8: Gran Podio Final 3D y Celebración]
+   ========================================================================== */
 #screen-grand-podium {
     background: radial-gradient(circle at 50% 10%, #ffffff 0%, #eef2f7 50%, #cbd5e1 100%);
     position: relative;
@@ -375,11 +475,68 @@ body {
 }
 .btn-restart-3d:active { transform: translateY(4px); box-shadow: 0 2px 0 #0d4d9b; }
 
+/* ==========================================================================
+   [MÓDULO CSS 9: Adaptabilidad Móvil Quirúrgica (Mobile-First Viewport)]
+   ========================================================================== */
 @media (max-width: 850px) {
-    .podium-team-photo { width: 80px; height: 80px; }
-    .photo-gold { width: 105px; height: 105px; }
-    .block-gold { height: 200px; }
-    .block-silver { height: 150px; }
-    .block-bronze { height: 110px; }
-    .grand-podium-title { font-size: 1.8rem; }
+    .app-container {
+        padding: 10px;
+    }
+
+    .welcome-box {
+        padding: 2rem 1.2rem 1.5rem 1.2rem;
+        margin: 10px auto 30px auto;
+        border-radius: 18px;
+    }
+
+    .main-title {
+        font-size: 2.1rem;
+    }
+
+    .sub-title {
+        font-size: 1.3rem;
+    }
+
+    .teams-grid {
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .team-btn {
+        padding: 14px 8px;
+        gap: 8px;
+        border-radius: 14px;
+    }
+
+    .team-btn span {
+        font-size: 0.95rem;
+    }
+
+    .team-card-img {
+        width: 75px;
+        height: 75px;
+        border-width: 3px;
+    }
+
+    .btn-enter {
+        padding: 16px;
+        font-size: 1.25rem;
+    }
+
+    .split-results-container { 
+        grid-template-columns: 1fr; 
+    }
+
+    .modal-card-fullscreen { 
+        height: auto; 
+        max-height: 95vh; 
+        overflow-y: auto; 
+    }
+
+    .podium-team-photo { width: 75px; height: 75px; }
+    .photo-gold { width: 95px; height: 95px; }
+    .block-gold { height: 180px; }
+    .block-silver { height: 130px; }
+    .block-bronze { height: 95px; }
+    .grand-podium-title { font-size: 1.6rem; }
 }
