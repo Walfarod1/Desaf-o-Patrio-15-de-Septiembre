@@ -405,7 +405,7 @@ html, body {
     overflow: hidden;
     justify-content: space-between;
     align-items: center;
-    padding: 2rem 1rem;
+    padding: 3rem 1rem 1.5rem 1rem;
 }
 
 #confetti-canvas {
@@ -425,27 +425,50 @@ html, body {
     100% { transform: rotate(25deg); }
 }
 
-.grand-podium-header { z-index: 3; text-align: center; margin-bottom: 1rem; }
+.grand-podium-header { z-index: 3; text-align: center; margin-bottom: 2.5rem; }
 .grand-podium-title { font-size: 2.5rem; color: var(--color-azul-patrio); font-weight: 900; text-shadow: 0 2px 10px rgba(255,255,255,0.8); }
 .grand-podium-subtitle { font-size: 1.2rem; color: #475569; font-weight: 700; margin-top: 5px; }
 
+/* --- Título: Estructura 3D con Ajuste de Margen Inferior e Avatares (+40%) --- */
 .podium-3d-wrapper {
-    display: flex; justify-content: center; align-items: flex-end; z-index: 3; gap: 15px; width: 100%; max-width: 900px; margin-top: auto;
+    display: flex; 
+    justify-content: center; 
+    align-items: flex-end; 
+    z-index: 3; 
+    gap: 20px; 
+    width: 100%; 
+    max-width: 1000px; 
+    margin-top: 45px; /* Empuja el podio hacia abajo generando espacio visual */
 }
 
 .podium-step { display: flex; flex-direction: column; align-items: center; flex: 1; }
-.podium-avatar-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; }
+.podium-avatar-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; margin-bottom: 22px; }
 
+/* Avatares 2do y 3er lugar incrementados un 40% (de 110px a 154px) */
 .podium-team-photo {
-    width: 110px; height: 110px; border-radius: 50%; object-fit: cover;
-    border: 5px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.3); background: white;
+    width: 154px; 
+    height: 154px; 
+    border-radius: 50%; 
+    object-fit: cover;
+    border: 6px solid white; 
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35); 
+    background: white;
 }
 
+/* Avatar 1er lugar (Oro) incrementado un 40% (de 140px a 196px) */
 .photo-gold {
-    width: 140px; height: 140px; border-color: #f1c40f; box-shadow: 0 0 30px rgba(241, 196, 15, 0.6);
+    width: 196px; 
+    height: 196px; 
+    border-color: #f1c40f; 
+    box-shadow: 0 0 40px rgba(241, 196, 15, 0.7);
 }
 
-.winner-crown { font-size: 3rem; position: absolute; top: -45px; animation: crownFloat 2s ease-in-out infinite alternate; }
+.winner-crown { 
+    font-size: 3.8rem; 
+    position: absolute; 
+    top: -65px; 
+    animation: crownFloat 2s ease-in-out infinite alternate; 
+}
 
 @keyframes crownFloat {
     from { transform: translateY(0); }
@@ -453,51 +476,87 @@ html, body {
 }
 
 .step-badge {
-    position: absolute; bottom: -10px; padding: 4px 14px; border-radius: 20px;
-    font-size: 1.1rem; font-weight: 900; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: absolute; 
+    bottom: -12px; 
+    padding: 6px 18px; 
+    border-radius: 20px;
+    font-size: 1.2rem; 
+    font-weight: 900; 
+    color: white; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    z-index: 4;
 }
 .badge-gold { background: linear-gradient(135deg, #f1c40f, #b7950b); }
 .badge-silver { background: linear-gradient(135deg, #bdc3c7, #7f8c8d); }
 .badge-bronze { background: linear-gradient(135deg, #e67e22, #a04000); }
 
 .podium-block {
-    width: 100%; background: linear-gradient(180deg, #ce1126 0%, #a80d1e 100%);
-    border: 6px solid #ffffff; border-bottom: none; border-radius: 12px 12px 0 0;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    padding: 15px 10px; box-shadow: inset 0 6px 12px rgba(255,255,255,0.4), 0 15px 30px rgba(0,0,0,0.25);
+    width: 100%; 
+    background: linear-gradient(180deg, #ce1126 0%, #a80d1e 100%);
+    border: 6px solid #ffffff; 
+    border-bottom: none; 
+    border-radius: 14px 14px 0 0;
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    padding: 15px 10px; 
+    box-shadow: inset 0 6px 12px rgba(255,255,255,0.4), 0 15px 30px rgba(0,0,0,0.25);
 }
 
-.block-gold { height: 260px; }
-.block-silver { height: 190px; }
-.block-bronze { height: 140px; }
+.block-gold { height: 230px; }
+.block-silver { height: 165px; }
+.block-bronze { height: 115px; }
 
-.podium-team-name { font-size: 1.2rem; font-weight: 900; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.4); text-align: center; }
-.name-gold { font-size: 1.45rem; color: #fff9db; }
+.podium-team-name { font-size: 1.25rem; font-weight: 900; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.4); text-align: center; }
+.name-gold { font-size: 1.5rem; color: #fff9db; }
 
-.podium-score-text { font-size: 1.1rem; font-weight: 800; color: rgba(255,255,255,0.9); margin-top: 4px; }
-.score-gold { font-size: 1.3rem; color: #ffffff; }
+.podium-score-text { font-size: 1.15rem; font-weight: 800; color: rgba(255,255,255,0.9); margin-top: 4px; }
+.score-gold { font-size: 1.35rem; color: #ffffff; }
 
 .red-carpet-3d {
-    width: 100%; max-width: 900px; height: 70px;
+    width: 100%; 
+    max-width: 1000px; 
+    height: 55px;
     background: linear-gradient(180deg, #ce1126 0%, #800a1a 100%);
     clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
-    z-index: 3; margin-top: -2px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    z-index: 3; 
+    margin-top: -2px; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
 }
 
 .grand-podium-footer {
-    z-index: 3; display: flex; flex-direction: column; align-items: center;
-    gap: 12px; margin-top: 15px; width: 100%; max-width: 600px;
+    z-index: 3; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    gap: 12px; 
+    margin-top: 20px; 
+    width: 100%; 
+    max-width: 600px;
 }
 
 .fourth-place-card {
-    background: rgba(255, 255, 255, 0.9); padding: 10px 25px; border-radius: 20px;
-    font-weight: 800; color: #334155; box-shadow: 0 4px 12px rgba(0,0,0,0.08); font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.9); 
+    padding: 10px 25px; 
+    border-radius: 20px;
+    font-weight: 800; 
+    color: #334155; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+    font-size: 1.1rem;
 }
 
 .btn-restart-3d {
-    background: var(--color-blue); color: white; border: none; padding: 16px 32px;
-    font-size: 1.2rem; font-weight: 900; border-radius: 12px; cursor: pointer;
-    box-shadow: 0 6px 0 #0d4d9b; transition: transform 0.1s;
+    background: var(--color-blue); 
+    color: white; 
+    border: none; 
+    padding: 16px 32px;
+    font-size: 1.2rem; 
+    font-weight: 900; 
+    border-radius: 12px; 
+    cursor: pointer;
+    box-shadow: 0 6px 0 #0d4d9b; 
+    transition: transform 0.1s;
 }
 .btn-restart-3d:active { transform: translateY(4px); box-shadow: 0 2px 0 #0d4d9b; }
 
