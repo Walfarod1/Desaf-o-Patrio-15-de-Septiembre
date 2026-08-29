@@ -351,19 +351,19 @@ html, body {
 .split-results-container { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; flex-grow: 1; margin: 15px 0; }
 .split-col-left { display: flex; flex-direction: column; gap: 15px; justify-content: center; }
 
-/* --- Título: Contenedor e Imagen Hero Ampliada (+20%) --- */
+/* --- Contenedor e Imagen Hero Ampliada (+20%) --- */
 .hero-image-container { 
     display: flex; 
     justify-content: center; 
     align-items: center; 
     width: 100%; 
-    max-height: 200px; /* Incrementado de 160px a 200px (+20%) */
+    max-height: 200px;
     overflow: hidden; 
 }
 
 .host-static-flag-img { 
     max-width: 100%; 
-    max-height: 180px; /* Incrementado de 150px a 180px (+20%) */
+    max-height: 180px; 
     object-fit: contain; 
     border-radius: 8px; 
     filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.18));
@@ -389,34 +389,23 @@ html, body {
 .podium-avatar-large { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid white; background: white; }
 .podium-score-large { font-size: 1.3rem; font-weight: 900; color: #ffffff; }
 
-.btn-next-large { background: var(--color-rojo-patrio); color: white; border: none; padding: 18px; width: 100%; border-radius: 14px; font-size: 1.4rem; font-weight: 900; cursor: pointer; box-shadow: 0 6px 0 #900a1a; animation: buttonPulse 2s infinite; }
+.btn-next-large { background: var(--color-rojo-patrio); color: white; border: none; padding: 18px; width: 100%; border-radius: 14px; font-size: 1.4rem; font-weight: 900; cursor: pointer; box-shadow: 0 6px 0 #900a1a; transition: transform 0.1s, background-color 0.2s; }
+.btn-next-large:hover { background-color: #e61c33; }
+.btn-next-large:active { transform: translateY(3px); box-shadow: 0 3px 0 #900a1a; }
 
 .modal-card-mobile { background: white; padding: 35px 25px; border-radius: 24px; text-align: center; max-width: 440px; width: 90%; }
 .modal-feedback-img { width: 120px; height: 120px; object-fit: contain; margin-bottom: 12px; }
 
 /* ==========================================================================
-   [MÓDULO CSS 8: Gran Podio Final 3D y Celebración (Refactorizado)]
+   [MÓDULO CSS 8: Gran Podio Final 3D y Celebración]
    ========================================================================== */
 #screen-grand-podium {
-    /* Fondo radial suave */
     background: radial-gradient(circle at 50% 10%, #ffffff 0%, #eef2f7 50%, #cbd5e1 100%);
-    
-    /* 1. CENTRADO ABSOLUTO E INQUEBRANTABLE: Obliga a tomar toda la pantalla y solapa cualquier div vecino que empuje el contenido */
-    position: fixed !important;
-    top: 0;
-    left: 0;
-    width: 100vw !important;
-    height: 100vh !important;
-    z-index: 500;
-    overflow-y: auto;
-    
-    /* Flexbox centrado en ambas direcciones */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Esto alinea todo al centro verticalmente, reemplazando el antiguo space-between */
+    position: relative;
+    overflow: hidden;
+    justify-content: space-between;
     align-items: center;
     padding: 2rem 1rem;
-    box-sizing: border-box;
 }
 
 #confetti-canvas {
@@ -436,45 +425,27 @@ html, body {
     100% { transform: rotate(25deg); }
 }
 
-.grand-podium-header { 
-    z-index: 3; 
-    text-align: center; 
-    margin-bottom: 2rem; 
-    /* 2. BAJADA DEL PODIO: Al empujar el header un poco, el podio baja naturalmente de la zona superior */
-    margin-top: 6vh; 
-}
-
+.grand-podium-header { z-index: 3; text-align: center; margin-bottom: 1rem; }
 .grand-podium-title { font-size: 2.5rem; color: var(--color-azul-patrio); font-weight: 900; text-shadow: 0 2px 10px rgba(255,255,255,0.8); }
 .grand-podium-subtitle { font-size: 1.2rem; color: #475569; font-weight: 700; margin-top: 5px; }
 
 .podium-3d-wrapper {
-    display: flex; justify-content: center; align-items: flex-end; z-index: 3; gap: 15px; width: 100%; max-width: 900px; 
-    /* Hemos removido el 'margin-top: auto' para evitar que se despegue del header hacia abajo */
+    display: flex; justify-content: center; align-items: flex-end; z-index: 3; gap: 15px; width: 100%; max-width: 900px; margin-top: auto;
 }
 
 .podium-step { display: flex; flex-direction: column; align-items: center; flex: 1; }
 .podium-avatar-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; }
 
-/* 3. AUMENTO DEL 20% EN LAS FOTOS DE LOS EQUIPOS */
 .podium-team-photo {
-    width: 132px; /* Aumento del 20% sobre 110px */
-    height: 132px; /* Aumento del 20% sobre 110px */
-    border-radius: 50%; object-fit: cover;
+    width: 110px; height: 110px; border-radius: 50%; object-fit: cover;
     border: 5px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.3); background: white;
 }
 
 .photo-gold {
-    width: 168px; /* Aumento del 20% sobre 140px */
-    height: 168px; /* Aumento del 20% sobre 140px */
-    border-color: #f1c40f; box-shadow: 0 0 30px rgba(241, 196, 15, 0.6);
+    width: 140px; height: 140px; border-color: #f1c40f; box-shadow: 0 0 30px rgba(241, 196, 15, 0.6);
 }
 
-.winner-crown { 
-    font-size: 3.5rem; /* Corona un poco más grande */
-    position: absolute; 
-    top: -55px; /* Ajuste para el nuevo tamaño de imagen dorada */
-    animation: crownFloat 2s ease-in-out infinite alternate; 
-}
+.winner-crown { font-size: 3rem; position: absolute; top: -45px; animation: crownFloat 2s ease-in-out infinite alternate; }
 
 @keyframes crownFloat {
     from { transform: translateY(0); }
@@ -515,7 +486,7 @@ html, body {
 
 .grand-podium-footer {
     z-index: 3; display: flex; flex-direction: column; align-items: center;
-    gap: 12px; margin-top: 25px; width: 100%; max-width: 600px;
+    gap: 12px; margin-top: 15px; width: 100%; max-width: 600px;
 }
 
 .fourth-place-card {
@@ -588,9 +559,8 @@ html, body {
         overflow-y: auto; 
     }
 
-    /* Aumento del 20% escalado a vistas móviles */
-    .podium-team-photo { width: 90px; height: 90px; } /* Antes 75px */
-    .photo-gold { width: 114px; height: 114px; } /* Antes 95px */
+    .podium-team-photo { width: 90px; height: 90px; }
+    .photo-gold { width: 114px; height: 114px; }
     
     .block-gold { height: 180px; }
     .block-silver { height: 130px; }
