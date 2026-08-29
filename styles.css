@@ -31,7 +31,6 @@
 html, body {
     width: 100%;
     min-height: 100vh;
-    height: auto;
     font-family: var(--font-main);
     background-color: var(--bg-dark);
     color: var(--text-dark);
@@ -40,6 +39,8 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0;
+    padding: 0;
 }
 
 .hidden { 
@@ -122,21 +123,23 @@ html, body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin: 0 auto;
     padding: 20px;
 }
 
 .screen {
     width: 100%;
     min-height: 100vh;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: auto;
+    margin: 0 auto;
 }
 
 .welcome-box {
     position: relative;
-    margin: auto; /* Centrado automático vertical y horizontal en Flexbox */
+    margin: 0 auto;
     background: var(--card-bg);
     padding: 3rem 2.5rem 2.5rem 2.5rem;
     border-radius: 24px;
