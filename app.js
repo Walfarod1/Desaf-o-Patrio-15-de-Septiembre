@@ -283,12 +283,15 @@ function resetGamepadUI() {
     document.getElementById('gamepad-grid').classList.remove('hidden');
 }
 
-// [MÓDULO JS 7: Lógica del Proyector (Host)]
+// [MÓDULO JS 7: Lógica del Proyector (Host) y Purga Automática de Puntuaciones]
 function initHostGame() {
     currentQuestionIndex = 0;
     if (db) {
+        // Limpieza completa de la base de datos para iniciar una partida nueva en 0 pts
         db.ref('gameState').set({ status: 'question', qIndex: 0 });
         db.ref('answers').remove();
+        db.ref('players').remove();
+        console.log("🧹 Base de datos reiniciada: Jugadores y puntuaciones anteriores eliminados.");
     }
     renderHostQuestion();
 }
