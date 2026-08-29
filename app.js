@@ -101,58 +101,55 @@ function showScreen(screenId) {
     target.classList.add('active');
 }
 
-// [MÓDULO JS 5: Registro de Jugador y Listener de Sincronización en Tiempo Real]
+// [MÓDULO JS 5: Registro de Jugador, Autocompletado Móvil y Sincronización DB]
 document.querySelectorAll('.team-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
-        // Quita la selección a todos y se la pone al que recibió el clic
         document.querySelectorAll('.team-btn').forEach(b => b.classList.remove('selected'));
         const targetBtn = e.target.closest('.team-btn');
         targetBtn.classList.add('selected');
         selectedTeam = targetBtn.getAttribute('data-team');
         
-        // Verifica si ya se puede habilitar el botón
+        // Al tocar un equipo, se habilita inmediatamente el botón de ingreso
         validatePlayerForm();
     });
 });
 
-// Verifica el input del nombre cada vez que el usuario teclea
 document.getElementById('player-name').addEventListener('input', validatePlayerForm);
 
-// Función estricta: Desbloquea el botón SOLO si hay nombre y equipo
 function validatePlayerForm() {
-    playerName = document.getElementById('player-name').value.trim();
     const btnJoin = document.getElementById('btn-join-game');
-    
-    if (playerName !== "" && selectedTeam !== "") {
-        btnJoin.disabled = false; // Habilita el botón
+    // Basta con seleccionar un equipo para desbloquear el botón
+    if (selectedTeam !== "") {
+        btnJoin.disabled = false;
     } else {
-        btnJoin.disabled = true; // Lo mantiene bloqueado
+        btnJoin.disabled = true;
     }
 }
 
-// Acción al presionar el botón "UNIRSE AL JUEGO"
 document.getElementById('btn-join-game').addEventListener('click', () => {
+    const inputVal = document.getElementById('player-name').value.trim();
+    // Si la casilla estaba vacía o solo tenía el placeholder, asigna un apodo por defecto
+    playerName = inputVal !== "" ? inputVal : "Jugador Tico " + Math.floor(Math.random() * 900 + 100);
+
     showScreen('screen-player-gamepad');
     document.getElementById('player-info-tag').innerHTML = `👤 ${playerName} | 🛡️ ${selectedTeam}`;
     document.getElementById('player-score-tag').textContent = playerScore;
 
     if (db) {
-        // Registrar jugador en el servidor de Firebase
+        // Registrar participante en Firebase Realtime DB
         db.ref('players/' + playerId).set({
             name: playerName,
             team: selectedTeam,
             score: 0
         });
         
-        // Escuchar cambios de estado globales emitidos por el Proyector
+        // Escuchar el estado global del juego (Host)
         db.ref('gameState').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                // Sincronizar el número de pregunta activa con el servidor
                 if (typeof data.qIndex !== 'undefined') {
                     currentQuestionIndex = data.qIndex;
                 }
-                // Si el Proyector envió la señal de nueva pregunta, reactivar mando
                 if (data.status === 'question') {
                     resetGamepadUI();
                 }
@@ -346,14 +343,20 @@ function startHostTimer() {
     }, 1000);
 }
 
-// [MÓDULO JS 8: Cálculo de Promedios y Podio Intermedio]
+// [MÓDULO JS 8: Cálculo de Promedios, Carga Tolerante de Assets y Podio Intermedio]
 function showHostResults() {
     const q = questions[currentQuestionIndex];
     document.getElementById('host-fact-text').textContent = q.fact;
     document.getElementById('host-correct-answer-text').textContent = q.options[q.answer];
 
     const heroImg = document.getElementById('host-hero-img');
-    if (heroImg) heroImg.src = "Assets/bandera.png";
+    if (heroImg) {
+        heroImg.src = "Assets/bandera.png";
+        // Mecanismo de respaldo contra insensibilidad a mayúsculas en servidores Linux
+        heroImg.onerror = () => {
+            heroImg.src = "Assets/Bandera.png";
+        };
+    }
 
     if (db) {
         db.ref('gameState').set({ status: 'results', qIndex: currentQuestionIndex });
