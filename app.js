@@ -283,17 +283,21 @@ function resetGamepadUI() {
     document.getElementById('gamepad-grid').classList.remove('hidden');
 }
 
-// [MÓDULO JS 7: Lógica del Proyector (Host) y Purga Automática de Puntuaciones]
+// [MÓDULO JS 7: Lógica del Proyector (Host) y Control de Reinicio Instantáneo]
 function initHostGame() {
     currentQuestionIndex = 0;
+    resetDatabaseAndScores();
+    renderHostQuestion();
+}
+
+function resetDatabaseAndScores() {
     if (db) {
-        // Limpieza completa de la base de datos para iniciar una partida nueva en 0 pts
+        // Purga completa de nodos en Firebase Realtime DB
         db.ref('gameState').set({ status: 'question', qIndex: 0 });
         db.ref('answers').remove();
         db.ref('players').remove();
-        console.log("🧹 Base de datos reiniciada: Jugadores y puntuaciones anteriores eliminados.");
+        console.log("🧹 Base de datos reiniciada por el Administrador: Marcadores en 0.");
     }
-    renderHostQuestion();
 }
 
 function renderQuestionOptionsForHost(q) {
@@ -345,6 +349,14 @@ function startHostTimer() {
         }
     }, 1000);
 }
+
+// Listener para el botón de Reinicio Rápido en la cabecera del Proyector
+document.getElementById('btn-host-reset-now').addEventListener('click', () => {
+    if (confirm("🚨 ¿Deseas borrar las puntuaciones actuales y reiniciar el juego desde la Pregunta 1?")) {
+        clearInterval(timer);
+        initHostGame();
+    }
+});
 
 // [MÓDULO JS 8: Cálculo de Promedios, Carga Tolerante de Assets y Podio Intermedio]
 function showHostResults() {
