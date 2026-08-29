@@ -109,7 +109,6 @@ document.querySelectorAll('.team-btn').forEach(btn => {
         targetBtn.classList.add('selected');
         selectedTeam = targetBtn.getAttribute('data-team');
         
-        // Al tocar un equipo, se habilita inmediatamente el botón de ingreso
         validatePlayerForm();
     });
 });
@@ -118,7 +117,6 @@ document.getElementById('player-name').addEventListener('input', validatePlayerF
 
 function validatePlayerForm() {
     const btnJoin = document.getElementById('btn-join-game');
-    // Basta con seleccionar un equipo para desbloquear el botón
     if (selectedTeam !== "") {
         btnJoin.disabled = false;
     } else {
@@ -128,7 +126,6 @@ function validatePlayerForm() {
 
 document.getElementById('btn-join-game').addEventListener('click', () => {
     const inputVal = document.getElementById('player-name').value.trim();
-    // Si la casilla estaba vacía o solo tenía el placeholder, asigna un apodo por defecto
     playerName = inputVal !== "" ? inputVal : "Jugador Tico " + Math.floor(Math.random() * 900 + 100);
 
     showScreen('screen-player-gamepad');
@@ -136,21 +133,26 @@ document.getElementById('btn-join-game').addEventListener('click', () => {
     document.getElementById('player-score-tag').textContent = playerScore;
 
     if (db) {
-        // Registrar participante en Firebase Realtime DB
         db.ref('players/' + playerId).set({
             name: playerName,
             team: selectedTeam,
             score: 0
         });
         
-        // Escuchar el estado global del juego (Host)
+        // Listener de sincroniación global con el Proyector (Host)
         db.ref('gameState').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 if (typeof data.qIndex !== 'undefined') {
                     currentQuestionIndex = data.qIndex;
                 }
-                if (data.status === 'question') {
+                
+                // Si el Administrador reinicia la partida, resetear marcador local en teléfono
+                if (data.status === 'reset') {
+                    playerScore = 0;
+                    document.getElementById('player-score-tag').textContent = '0';
+                    resetGamepadUI();
+                } else if (data.status === 'question') {
                     resetGamepadUI();
                 }
             }
@@ -285,19 +287,23 @@ function resetGamepadUI() {
 
 // [MÓDULO JS 7: Lógica del Proyector (Host) y Control de Reinicio Instantáneo]
 function initHostGame() {
+    // 1. Detener cualquier temporizador que esté corriendo
+    if (timer) {
+        clearInterval(timer);
+    }
+    
     currentQuestionIndex = 0;
-    resetDatabaseAndScores();
-    renderHostQuestion();
-}
-
-function resetDatabaseAndScores() {
+    
+    // 2. Notificar e ignorar/borrar datos previos en el servidor
     if (db) {
-        // Purga completa de nodos en Firebase Realtime DB
-        db.ref('gameState').set({ status: 'question', qIndex: 0 });
+        db.ref('gameState').set({ status: 'reset', qIndex: 0 });
         db.ref('answers').remove();
         db.ref('players').remove();
-        console.log("🧹 Base de datos reiniciada por el Administrador: Marcadores en 0.");
+        console.log("🧹 Partida reiniciada: Marcadores y respuestas eliminadas.");
     }
+
+    // 3. Iniciar la primera pregunta
+    renderHostQuestion();
 }
 
 function renderQuestionOptionsForHost(q) {
@@ -336,7 +342,9 @@ function renderHostQuestion() {
 }
 
 function startHostTimer() {
-    clearInterval(timer);
+    if (timer) {
+        clearInterval(timer);
+    }
     timeLeft = 15;
     document.getElementById('host-timer-display').textContent = timeLeft;
 
@@ -350,10 +358,9 @@ function startHostTimer() {
     }, 1000);
 }
 
-// Listener para el botón de Reinicio Rápido en la cabecera del Proyector
+// Evento directo sobre el botón "Reiniciar Partida" de la cabecera
 document.getElementById('btn-host-reset-now').addEventListener('click', () => {
     if (confirm("🚨 ¿Deseas borrar las puntuaciones actuales y reiniciar el juego desde la Pregunta 1?")) {
-        clearInterval(timer);
         initHostGame();
     }
 });
