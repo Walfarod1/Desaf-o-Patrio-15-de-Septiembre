@@ -62,9 +62,15 @@ let timer = null;
 let timeLeft = 15;
 let confettiAnimationId = null;
 
-// [MÓDULO JS 3: Inicialización Firebase DB Sync]
+// [MÓDULO JS 3: Inicialización Firebase DB Sync - Producción Realtime]
 const firebaseConfig = {
-    databaseURL: "https://reto-patrio-2026-default-rtdb.firebaseio.com/" 
+    apiKey: "AIzaSyC4Tnc_Gi8XQf2wDvBPA8L0B2iRye-23cI",
+    authDomain: "reto-patrio-2026.firebaseapp.com",
+    databaseURL: "https://reto-patrio-2026-default-rtdb.firebaseio.com",
+    projectId: "reto-patrio-2026",
+    storageBucket: "reto-patrio-2026.firebasestorage.app",
+    messagingSenderId: "1090963167498",
+    appId: "1:1090963167498:web:7158f4c58b5f54098fc2f3"
 };
 
 let db = null;
@@ -72,9 +78,10 @@ try {
     if (typeof firebase !== 'undefined') {
         firebase.initializeApp(firebaseConfig);
         db = firebase.database();
+        console.log("🟢 Conexión en tiempo real activa para Reto Patrio 2026.");
     }
 } catch (e) {
-    console.warn("Modo Local / Fallback activado sin servidor en vivo:", e);
+    console.error("🔴 Error al conectar con Firebase:", e);
 }
 
 // [MÓDULO JS 4: Controladores de Pantalla y Rol Proyector]
