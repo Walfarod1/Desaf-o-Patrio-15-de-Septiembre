@@ -1,0 +1,385 @@
+/* [MÓDULO CSS 1: Variables de Sistema y Paleta Kahoot-Patria] */
+:root {
+    --color-red: #E21B3C;
+    --color-blue: #1368CE;
+    --color-yellow: #D89E00;
+    --color-green: #26890C;
+    
+    --color-azul-patrio: #002b7f;
+    --color-rojo-patrio: #ce1126;
+    --color-blanco-patrio: #ffffff;
+    
+    --bg-dark: #040c1a;
+    --card-bg: #ffffff;
+    --text-dark: #222222;
+    --podium-bg: #091730;
+    
+    --font-main: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* [MÓDULO CSS 2: Reset Base y Reglas Inquebrantables de Visibilidad] */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.hidden { display: none !important; }
+.active { display: flex !important; }
+
+/* [MÓDULO CSS 3: Fondo Animado Bandera de Costa Rica Full-Page (Alta Definición y Dinamismo)] */
+.bg-flag-layer {
+    position: fixed;
+    top: -10%;
+    left: -10%;
+    width: 120%;
+    height: 120%;
+    z-index: 0;
+    pointer-events: none;
+    
+    background: linear-gradient(
+        180deg,
+        #002b7f 0%, #002b7f 16.66%,
+        #ffffff 16.66%, #ffffff 33.33%,
+        #ce1126 33.33%, #ce1126 66.66%,
+        #ffffff 66.66%, #ffffff 83.33%,
+        #002b7f 83.33%, #002b7f 100%
+    );
+
+    background-image: 
+        repeating-linear-gradient(
+            120deg,
+            rgba(255, 255, 255, 0.28) 0%,
+            rgba(0, 0, 0, 0.25) 12%,
+            rgba(255, 255, 255, 0.28) 25%
+        ),
+        linear-gradient(
+            180deg,
+            #002b7f 0%, #002b7f 16.66%,
+            #ffffff 16.66%, #ffffff 33.33%,
+            #ce1126 33.33%, #ce1126 66.66%,
+            #ffffff 66.66%, #ffffff 83.33%,
+            #002b7f 83.33%, #002b7f 100%
+        );
+    background-blend-mode: overlay;
+    background-size: 200% 200%, 100% 100%;
+
+    opacity: 0.55;
+    filter: blur(1.5px) contrast(120%);
+    animation: waveMotion 6s ease-in-out infinite alternate;
+}
+
+@keyframes waveMotion {
+    0% { 
+        transform: scale(1) rotate(-1deg) translateY(0px) translateX(0px); 
+        background-position: 0% 0%, 0% 0%; 
+    }
+    50% { 
+        transform: scale(1.06) rotate(1.5deg) translateY(-15px) translateX(10px); 
+        background-position: 60% 35%, 0% 0%; 
+    }
+    100% { 
+        transform: scale(1.03) rotate(-1.5deg) translateY(12px) translateX(-10px); 
+        background-position: 100% 70%, 0% 0%; 
+    }
+}
+
+
+/* [MÓDULO CSS 4: Layout General y Tarjeta Principal con Selección] */
+.app-container {
+    width: 100%;
+    max-width: 1400px;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.screen {
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+}
+
+.welcome-box {
+    position: relative;
+    margin: auto;
+    background: var(--card-bg);
+    padding: 3.5rem 3rem 2.5rem 3rem;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.45);
+    text-align: center;
+    max-width: 920px;
+    width: 95%;
+    border-top: 10px solid var(--color-azul-patrio);
+}
+
+.btn-discreet-host {
+    position: absolute; top: 18px; right: 20px;
+    background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1;
+    border-radius: 20px; padding: 6px 14px; font-size: 0.82rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s ease;
+}
+.btn-discreet-host:hover { background: #e2e8f0; color: var(--color-azul-patrio); border-color: var(--color-blue); }
+
+.main-title { font-size: 2.8rem; color: var(--color-azul-patrio); font-weight: 900; margin-bottom: 5px; }
+.sub-title { font-size: 1.6rem; color: var(--color-rojo-patrio); margin-bottom: 12px; font-weight: 800; }
+.tagline { margin-bottom: 25px; color: #555; font-size: 1.05rem; }
+
+.input-label { display: block; text-align: left; font-weight: 800; margin-bottom: 8px; color: #333; font-size: 1.05rem; }
+
+.form-group input {
+    width: 100%; padding: 18px 20px; font-size: 1.3rem; text-align: center;
+    border: 3px solid #cbd5e1; border-radius: 14px; margin-bottom: 25px; font-weight: bold;
+    transition: border-color 0.2s;
+}
+.form-group input:focus { border-color: var(--color-blue); outline: none; }
+
+.instruction { font-weight: 800; margin-bottom: 16px; text-align: left; color: #333; font-size: 1.1rem; }
+
+.teams-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 30px; }
+
+.team-btn {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 22px 15px; border: 3px solid #e2e8f0; border-radius: 18px; background: #ffffff;
+    cursor: pointer; font-weight: 800; transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); gap: 12px;
+}
+.team-btn span { font-size: 1.15rem; color: #222; font-weight: 800; }
+
+.team-card-img {
+    width: 105px; height: 105px; object-fit: cover; border-radius: 50%;
+    border: 4px solid var(--color-blue); background: #f8fafc; box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease;
+}
+
+.team-btn:hover .team-card-img { transform: scale(1.08); }
+
+.team-btn.selected {
+    background-color: #eef4ff; border-color: var(--color-blue); transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(19, 104, 206, 0.3);
+}
+.team-btn.selected span { color: var(--color-blue); font-weight: 900; }
+
+.btn-enter {
+    width: 100%; padding: 20px; font-size: 1.45rem; font-weight: 900; border-radius: 14px;
+    background: var(--color-green); color: white; border: none; cursor: pointer;
+    box-shadow: 0 6px 0 #1b6308; transition: transform 0.1s, background-color 0.2s; letter-spacing: 0.5px;
+}
+.btn-enter:disabled { background: #cbd5e1; box-shadow: 0 6px 0 #94a3b8; cursor: not-allowed; }
+.btn-enter:not(:disabled):hover { background-color: #2da10e; }
+.btn-enter:not(:disabled):active { transform: translateY(4px); box-shadow: 0 2px 0 #1b6308; }
+
+/* [MÓDULO CSS 5: Gamepad Móvil táctil] */
+.mobile-header {
+    display: flex; justify-content: space-between; padding: 15px 20px;
+    background: white; font-weight: 800; font-size: 1.1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.kahoot-grid-gamepad { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; flex-grow: 1; }
+
+.btn-kahoot {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem; font-weight: bold; color: white; border: none; border-radius: 12px;
+    cursor: pointer; box-shadow: 0 8px 0 rgba(0,0,0,0.3); transition: transform 0.1s;
+}
+.btn-kahoot:active { transform: translateY(8px); box-shadow: none; }
+
+.btn-red { background-color: var(--color-red); box-shadow: 0 8px 0 #a9122c; }
+.btn-blue { background-color: var(--color-blue); box-shadow: 0 8px 0 #0d4d9b; }
+.btn-yellow { background-color: var(--color-yellow); box-shadow: 0 8px 0 #a07500; }
+.btn-green { background-color: var(--color-green); box-shadow: 0 8px 0 #1b6308; }
+
+.waiting-box { margin: auto; background: white; padding: 30px; border-radius: 16px; text-align: center; }
+
+/* [MÓDULO CSS 6: Cabecera Proyector y Pregunta] */
+.game-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 30px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px);
+}
+.question-counter { font-size: 1.2rem; font-weight: bold; color: #555; background: #eef2f7; padding: 6px 18px; border-radius: 20px; }
+.header-center h3 { font-size: 1.2rem; color: var(--color-azul-patrio); font-weight: 800; }
+
+.timer-circle {
+    width: 65px; height: 60px; background: var(--color-blue); border-radius: 50%;
+    display: flex; justify-content: center; align-items: center; color: white;
+    font-size: 1.6rem; font-weight: 900; box-shadow: 0 0 0 5px rgba(19, 104, 206, 0.25);
+}
+
+.question-container { flex-grow: 1; display: flex; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+#host-question-title { 
+    font-size: 2.3rem; font-weight: 900; background: rgba(255, 255, 255, 0.96); padding: 30px 40px; 
+    border-radius: 14px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); max-width: 950px; width: 100%;
+}
+
+.kahoot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; height: 42vh; }
+.game-footer { display: flex; justify-content: space-between; padding: 12px 25px; background: white; font-weight: bold; color: #444; }
+
+/* [MÓDULO CSS 7: Split-Screen Proyector] */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(4, 12, 26, 0.88); justify-content: center; align-items: center; z-index: 100; padding: 20px;
+}
+
+.modal-card-fullscreen {
+    background: rgba(255, 255, 255, 0.98); width: 95vw; height: 90vh; border-radius: 24px;
+    padding: 2rem; box-shadow: 0 30px 70px rgba(0,0,0,0.6); display: flex; flex-direction: column;
+    justify-content: space-between; backdrop-filter: blur(12px); border: 3px solid rgba(255, 255, 255, 0.6);
+}
+
+.results-fullscreen-header { text-align: center; border-bottom: 3px solid #e2e8f0; padding-bottom: 10px; }
+.results-fullscreen-header h2 { font-size: 2.2rem; color: var(--color-azul-patrio); font-weight: 900; }
+
+.split-results-container { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; flex-grow: 1; margin: 15px 0; }
+.split-col-left { display: flex; flex-direction: column; gap: 15px; justify-content: center; }
+
+.hero-image-container { display: flex; justify-content: center; align-items: center; width: 100%; max-height: 160px; overflow: hidden; }
+.host-static-flag-img { max-width: 100%; max-height: 150px; object-fit: contain; border-radius: 8px; }
+
+.answer-reveal-card { background: #f0fdf4; border: 3px solid var(--color-green); border-radius: 16px; padding: 18px; text-align: center; }
+.reveal-badge { display: inline-block; background: var(--color-green); color: white; font-size: 0.85rem; font-weight: 900; padding: 4px 14px; border-radius: 20px; margin-bottom: 8px; }
+.correct-answer-heading { font-size: 2.2rem; color: #14532d; font-weight: 900; }
+
+.fact-card-fullscreen { background: #fff9e6; border-radius: 16px; padding: 20px; border-left: 8px solid var(--color-yellow); }
+.fact-card-fullscreen h3 { font-size: 1.15rem; color: #8a6500; font-weight: 900; margin-bottom: 8px; }
+.fact-card-fullscreen p { font-size: 1.05rem; color: #333; line-height: 1.5; font-weight: 600; }
+
+.split-col-right { display: flex; flex-direction: column; }
+.live-podium-fullscreen { background: var(--podium-bg); border-radius: 20px; padding: 22px; color: white; height: 100%; display: flex; flex-direction: column; }
+.podium-title-fullscreen { color: var(--color-yellow); font-size: 1.1rem; margin-bottom: 15px; text-transform: uppercase; font-weight: 900; text-align: center; }
+.podium-list-fullscreen { display: flex; flex-direction: column; gap: 12px; justify-content: center; flex-grow: 1; }
+
+.podium-row-large { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.08); padding: 14px 20px; border-radius: 12px; font-size: 1.15rem; }
+.podium-row-large.rank-1 { background: linear-gradient(90deg, rgba(216, 158, 0, 0.35) 0%, rgba(216, 158, 0, 0.1) 100%); border: 2px solid rgba(216, 158, 0, 0.8); font-weight: 900; }
+.podium-team-large { display: flex; align-items: center; gap: 14px; font-weight: 800; }
+.podium-avatar-large { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid white; background: white; }
+.podium-score-large { font-size: 1.3rem; font-weight: 900; color: #ffffff; }
+
+.btn-next-large { background: var(--color-rojo-patrio); color: white; border: none; padding: 18px; width: 100%; border-radius: 14px; font-size: 1.4rem; font-weight: 900; cursor: pointer; box-shadow: 0 6px 0 #900a1a; animation: buttonPulse 2s infinite; }
+
+.modal-card-mobile { background: white; padding: 35px 25px; border-radius: 24px; text-align: center; max-width: 440px; width: 90%; }
+.modal-feedback-img { width: 120px; height: 120px; object-fit: contain; margin-bottom: 12px; }
+
+/* [MÓDULO CSS 8: GRAN PODIO FINAL 3D Y CELEBRACIÓN] */
+#screen-grand-podium {
+    background: radial-gradient(circle at 50% 10%, #ffffff 0%, #eef2f7 50%, #cbd5e1 100%);
+    position: relative;
+    overflow: hidden;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 1rem;
+}
+
+#confetti-canvas {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none;
+}
+
+.spotlight {
+    position: absolute; top: -100px; width: 350px; height: 800px;
+    background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+    pointer-events: none; z-index: 1; transform-origin: top center;
+}
+.spotlight-left { left: 15%; transform: rotate(-25deg); animation: spotlightSwing 6s ease-in-out infinite alternate; }
+.spotlight-right { right: 15%; transform: rotate(25deg); animation: spotlightSwing 6s ease-in-out infinite alternate-reverse; }
+
+@keyframes spotlightSwing {
+    0% { transform: rotate(-25deg); }
+    100% { transform: rotate(25deg); }
+}
+
+.grand-podium-header { z-index: 3; text-align: center; margin-bottom: 1rem; }
+.grand-podium-title { font-size: 2.5rem; color: var(--color-azul-patrio); font-weight: 900; text-shadow: 0 2px 10px rgba(255,255,255,0.8); }
+.grand-podium-subtitle { font-size: 1.2rem; color: #475569; font-weight: 700; margin-top: 5px; }
+
+.podium-3d-wrapper {
+    display: flex; justify-content: center; align-items: flex-end; z-index: 3; gap: 15px; width: 100%; max-width: 900px; margin-top: auto;
+}
+
+.podium-step { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.podium-avatar-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; }
+
+.podium-team-photo {
+    width: 110px; height: 110px; border-radius: 50%; object-fit: cover;
+    border: 5px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.3); background: white;
+}
+
+.photo-gold {
+    width: 140px; height: 140px; border-color: #f1c40f; box-shadow: 0 0 30px rgba(241, 196, 15, 0.6);
+}
+
+.winner-crown { font-size: 3rem; position: absolute; top: -45px; animation: crownFloat 2s ease-in-out infinite alternate; }
+
+@keyframes crownFloat {
+    from { transform: translateY(0); }
+    to { transform: translateY(-8px); }
+}
+
+.step-badge {
+    position: absolute; bottom: -10px; padding: 4px 14px; border-radius: 20px;
+    font-size: 1.1rem; font-weight: 900; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.badge-gold { background: linear-gradient(135deg, #f1c40f, #b7950b); }
+.badge-silver { background: linear-gradient(135deg, #bdc3c7, #7f8c8d); }
+.badge-bronze { background: linear-gradient(135deg, #e67e22, #a04000); }
+
+.podium-block {
+    width: 100%; background: linear-gradient(180deg, #ce1126 0%, #a80d1e 100%);
+    border: 6px solid #ffffff; border-bottom: none; border-radius: 12px 12px 0 0;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 15px 10px; box-shadow: inset 0 6px 12px rgba(255,255,255,0.4), 0 15px 30px rgba(0,0,0,0.25);
+}
+
+.block-gold { height: 260px; }
+.block-silver { height: 190px; }
+.block-bronze { height: 140px; }
+
+.podium-team-name { font-size: 1.2rem; font-weight: 900; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.4); text-align: center; }
+.name-gold { font-size: 1.45rem; color: #fff9db; }
+
+.podium-score-text { font-size: 1.1rem; font-weight: 800; color: rgba(255,255,255,0.9); margin-top: 4px; }
+.score-gold { font-size: 1.3rem; color: #ffffff; }
+
+.red-carpet-3d {
+    width: 100%; max-width: 900px; height: 70px;
+    background: linear-gradient(180deg, #ce1126 0%, #800a1a 100%);
+    clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+    z-index: 3; margin-top: -2px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.grand-podium-footer {
+    z-index: 3; display: flex; flex-direction: column; align-items: center;
+    gap: 12px; margin-top: 15px; width: 100%; max-width: 600px;
+}
+
+.fourth-place-card {
+    background: rgba(255, 255, 255, 0.9); padding: 10px 25px; border-radius: 20px;
+    font-weight: 800; color: #334155; box-shadow: 0 4px 12px rgba(0,0,0,0.08); font-size: 1.1rem;
+}
+
+.btn-restart-3d {
+    background: var(--color-blue); color: white; border: none; padding: 16px 32px;
+    font-size: 1.2rem; font-weight: 900; border-radius: 12px; cursor: pointer;
+    box-shadow: 0 6px 0 #0d4d9b; transition: transform 0.1s;
+}
+.btn-restart-3d:active { transform: translateY(4px); box-shadow: 0 2px 0 #0d4d9b; }
+
+@media (max-width: 850px) {
+    .podium-team-photo { width: 80px; height: 80px; }
+    .photo-gold { width: 105px; height: 105px; }
+    .block-gold { height: 200px; }
+    .block-silver { height: 150px; }
+    .block-bronze { height: 110px; }
+    .grand-podium-title { font-size: 1.8rem; }
+}

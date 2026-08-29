@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- [MÓDULO HTML 1: Metadatos, Fuentes y SDK Firebase Realtime DB] -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reto Patrio 2026 - Gran Podio Final</title>
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Firebase App y Realtime Database desde CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+    <!-- [MÓDULO HTML 2: Capa de Fondo Animado Bandera Patria] -->
+    <div class="bg-flag-layer" aria-hidden="true"></div>
+
+    <main class="app-container">
+
+        <!-- [MÓDULO HTML 3: Pantalla Principal de Registro de Jugador] -->
+        <section id="screen-welcome" class="screen active">
+            <div class="welcome-box">
+                <button id="btn-secret-host" type="button" class="btn-discreet-host" title="Activar Pantalla Proyector">
+                    🖥️ Modo Proyector
+                </button>
+
+                <h1 class="main-title">RETO PATRIO 2026</h1>
+                <h2 class="sub-title">¿Qué tan Tico sos?</h2>
+                <p class="tagline">Ingresá tus datos para unirte a la partida en vivo:</p>
+                
+                <div class="form-group">
+                    <label for="player-name" class="input-label">Tu Nombre o Apodo:</label>
+                    <input type="text" id="player-name" placeholder="Ej. María, Choco, Pedro..." autocomplete="off" />
+                </div>
+
+                <div class="form-group">
+                    <p class="instruction">Seleccioná tu Equipo de Gestión Humana:</p>
+                    <div class="teams-grid">
+                        <button class="team-btn" data-team="Los Yigüirros" type="button">
+                            <img src="Assets/yigui.png" alt="Los Yigüirros" class="team-card-img" />
+                            <span>Los Yigüirros</span>
+                        </button>
+                        <button class="team-btn" data-team="Los Hijos de Lencho Salazar" type="button">
+                            <img src="Assets/Los_hijos.png" alt="Los Hijos de Lencho Salazar" class="team-card-img" />
+                            <span>Los Hijos de Lencho Salazar</span>
+                        </button>
+                        <button class="team-btn" data-team="Los Tuanis" type="button">
+                            <img src="Assets/Tuanis.png" alt="Los Tuanis" class="team-card-img" />
+                            <span>Los Tuanis</span>
+                        </button>
+                        <button class="team-btn" data-team="Los de la Carreta" type="button">
+                            <img src="Assets/Carreta.png" alt="Los de la Carreta" class="team-card-img" />
+                            <span>Los de la Carreta</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button id="btn-join-game" class="btn-enter" disabled type="button">▶️ UNIRSE AL JUEGO</button>
+            </div>
+        </section>
+
+        <!-- [MÓDULO HTML 4: VISTA JUGADOR - Gamepad Mando de Respuestas en Celular] -->
+        <section id="screen-player-gamepad" class="screen hidden">
+            <header class="mobile-header">
+                <span id="player-info-tag">Jugador | Equipo</span>
+                <span class="score-tag">Puntos: <strong id="player-score-tag">0</strong></span>
+            </header>
+
+            <div id="gamepad-grid" class="kahoot-grid-gamepad">
+                <button class="btn-kahoot btn-red" data-choice="0" type="button"><span class="shape-icon">▲</span></button>
+                <button class="btn-kahoot btn-blue" data-choice="1" type="button"><span class="shape-icon">◆</span></button>
+                <button class="btn-kahoot btn-yellow" data-choice="2" type="button"><span class="shape-icon">●</span></button>
+                <button class="btn-kahoot btn-green" data-choice="3" type="button"><span class="shape-icon">◼</span></button>
+            </div>
+
+            <div id="gamepad-waiting" class="waiting-box hidden">
+                <h2>⏳ Respuesta enviada</h2>
+                <p>Mirá la pantalla principal para ver los resultados...</p>
+            </div>
+        </section>
+
+        <!-- [MÓDULO HTML 5: VISTA JUGADOR - Modal de Feedback Móvil] -->
+        <div id="modal-player-feedback" class="modal-overlay hidden">
+            <div class="modal-card-mobile">
+                <img id="player-feedback-img" class="modal-feedback-img" src="Assets/Bien.png" alt="Resultado" />
+                <h2 id="player-feedback-title" class="modal-title correct">¡CORRECTO!</h2>
+                <p id="player-feedback-sub" class="modal-subtitle">+150 pts</p>
+                <p class="wait-next-msg">Esperando a que el administrador avance a la siguiente pregunta...</p>
+            </div>
+        </div>
+
+        <!-- [MÓDULO HTML 6: VISTA HOST - Tablero Proyector de Preguntas] -->
+        <section id="screen-host-board" class="screen hidden">
+            <header class="game-header">
+                <div class="header-left">
+                    <span class="question-counter" id="host-progress-text">Pregunta 1 de 20</span>
+                </div>
+                <div class="header-center">
+                    <h3 id="host-level-text">Nivel 1: Tico de Corazón</h3>
+                </div>
+                <div class="header-right">
+                    <div class="timer-circle" id="host-timer-display">15</div>
+                </div>
+            </header>
+
+            <div class="question-container">
+                <h2 id="host-question-title">Cargando pregunta...</h2>
+            </div>
+
+            <div id="host-options-grid" class="kahoot-grid">
+                <!-- Se inyecta dinámicamente -->
+            </div>
+            
+            <footer class="game-footer">
+                <span>📱 Escaneá el QR para responder desde tu celular</span>
+                <span>Respuestas Recibidas: <strong id="host-answers-count">0</strong></span>
+            </footer>
+        </section>
+
+        <!-- [MÓDULO HTML 7: VISTA HOST - Split-Screen de Resultados Intermedios] -->
+        <div id="modal-host-results" class="modal-overlay hidden">
+            <div class="modal-card-fullscreen">
+                <header class="results-fullscreen-header">
+                    <h2>📊 RESULTADOS Y TABLA DE POSICIONES</h2>
+                </header>
+                
+                <div class="split-results-container">
+                    <div class="split-col-left">
+                        <div class="hero-image-container">
+                            <img id="host-hero-img" class="host-static-flag-img" src="Assets/bandera.png" alt="Bandera de Costa Rica" />
+                        </div>
+
+                        <div class="answer-reveal-card">
+                            <span class="reveal-badge">RESPUESTA CORRECTA</span>
+                            <h2 id="host-correct-answer-text" class="correct-answer-heading">-</h2>
+                        </div>
+
+                        <div class="fact-card-fullscreen">
+                            <h3>💡 ¿Sabías que...?</h3>
+                            <p id="host-fact-text">Cargando dato curioso patrio...</p>
+                        </div>
+                    </div>
+
+                    <div class="split-col-right">
+                        <div class="live-podium-fullscreen">
+                            <h3 class="podium-title-fullscreen">🏆 PODIO EN VIVO POR EQUIPOS (PROMEDIO)</h3>
+                            <div id="host-podium-list" class="podium-list-fullscreen">
+                                <!-- Podio intermedio -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="results-fullscreen-footer">
+                    <button id="btn-host-next-question" type="button" class="btn-next-large">AVANZAR A LA SIGUIENTE PREGUNTA ➜</button>
+                </footer>
+            </div>
+        </div>
+
+        <!-- [MÓDULO HTML 8: VISTA HOST - ESCENARIO Y PODIO FINAL DE GRAN CELEBRACIÓN] -->
+        <section id="screen-grand-podium" class="screen hidden">
+            <div class="grand-podium-stage">
+                <!-- Canvas para animación continua de confeti -->
+                <canvas id="confetti-canvas"></canvas>
+
+                <!-- Luces de Reflector de Fondo -->
+                <div class="spotlight spotlight-left"></div>
+                <div class="spotlight spotlight-right"></div>
+
+                <header class="grand-podium-header">
+                    <h1 class="grand-podium-title">🏆 ¡EQUIPO GANADOR DEL RETO PATRIO 2026! 🏆</h1>
+                    <p class="grand-podium-subtitle">Felicidades a todos los participantes por demostrar su amor por Costa Rica</p>
+                </header>
+
+                <!-- Estructura del Podio 3D -->
+                <div class="podium-3d-wrapper">
+                    <!-- 2º LUGAR (Izquierda - Plata) -->
+                    <div class="podium-step step-silver">
+                        <div class="podium-avatar-wrapper">
+                            <img id="grand-img-2" src="Assets/hijos.png" alt="2do Lugar" class="podium-team-photo" />
+                            <div class="step-badge badge-silver">🥈 2°</div>
+                        </div>
+                        <div class="podium-block block-silver">
+                            <span id="grand-name-2" class="podium-team-name">-</span>
+                            <span id="grand-score-2" class="podium-score-text">0 pts</span>
+                        </div>
+                    </div>
+
+                    <!-- 1º LUGAR (Centro - Oro) -->
+                    <div class="podium-step step-gold">
+                        <div class="podium-avatar-wrapper winner-glow">
+                            <div class="winner-crown">👑</div>
+                            <img id="grand-img-1" src="Assets/pajaro.png" alt="1er Lugar" class="podium-team-photo photo-gold" />
+                            <div class="step-badge badge-gold">🥇 1°</div>
+                        </div>
+                        <div class="podium-block block-gold">
+                            <span id="grand-name-1" class="podium-team-name name-gold">-</span>
+                            <span id="grand-score-1" class="podium-score-text score-gold">0 pts</span>
+                        </div>
+                    </div>
+
+                    <!-- 3º LUGAR (Derecha - Bronce) -->
+                    <div class="podium-step step-bronze">
+                        <div class="podium-avatar-wrapper">
+                            <img id="grand-img-3" src="Assets/porcio.png" alt="3er Lugar" class="podium-team-photo" />
+                            <div class="step-badge badge-bronze">🥉 3°</div>
+                        </div>
+                        <div class="podium-block block-bronze">
+                            <span id="grand-name-3" class="podium-team-name">-</span>
+                            <span id="grand-score-3" class="podium-score-text">0 pts</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alfombra Roja 3D -->
+                <div class="red-carpet-3d"></div>
+
+                <!-- 4º Lugar y Reinicio -->
+                <footer class="grand-podium-footer">
+                    <div class="fourth-place-card">
+                        <span>4° Lugar: <strong id="grand-name-4">-</strong> (<span id="grand-score-4">0</span> pts)</span>
+                    </div>
+                    <button id="btn-restart-tournament" type="button" class="btn-restart-3d">🔄 REINICIAR RETO PATRIO</button>
+                </footer>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- [MÓDULO HTML 9: Inyección del Motor JS] -->
+    <script src="app.js"></script>
+</body>
+</html>
