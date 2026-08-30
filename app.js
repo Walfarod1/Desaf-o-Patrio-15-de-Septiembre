@@ -226,7 +226,7 @@ function submitPlayerAnswer(choiceIndex) {
 
     if (isCorrect) {
         img.src = "Assets/Bien.png";
-        title.textContent = "¡CORRECTO!";
+        title.textContent = "¡QUE MANERA!";
         title.className = "modal-title correct";
         sub.textContent = `+${earned} pts`;
     } else {
