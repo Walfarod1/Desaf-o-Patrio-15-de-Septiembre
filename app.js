@@ -237,16 +237,13 @@ function resetGamepadUI() {
     document.getElementById('gamepad-grid').classList.remove('hidden');
 }
 
-// [MÓDULO JS 7: Lógica del Proyector (Host) y Control de Reinicio Instantáneo]
+// ==========================================================================
+// [MÓDULO JS 7: Lógica del Proyector (Host) y Control del Temporizador]
+// ==========================================================================
 function initHostGame() {
-    // 1. Detener cualquier temporizador que esté corriendo
-    if (timer) {
-        clearInterval(timer);
-    }
-    
+    if (timer) clearInterval(timer);
     currentQuestionIndex = 0;
     
-    // 2. Notificar e ignorar/borrar datos previos en el servidor
     if (db) {
         db.ref('gameState').set({ status: 'reset', qIndex: 0 });
         db.ref('answers').remove();
@@ -254,7 +251,6 @@ function initHostGame() {
         console.log("🧹 Partida reiniciada: Marcadores y respuestas eliminadas.");
     }
 
-    // 3. Iniciar la primera pregunta
     renderHostQuestion();
 }
 
@@ -272,31 +268,44 @@ function renderQuestionOptionsForHost(q) {
 }
 
 function renderHostQuestion() {
-    document.getElementById('modal-host-results').classList.add('hidden');
-    const q = questions[currentQuestionIndex];
+    // 1. Ocultar modal de resultados del nivel anterior
+    const resultsModal = document.getElementById('modal-host-results');
+    if (resultsModal) resultsModal.classList.add('hidden');
 
+    // 2. Verificar si quedan preguntas
+    const q = questions[currentQuestionIndex];
+    if (!q) {
+        renderGrandPodiumStage();
+        return;
+    }
+
+    // 3. Renderizar textos e interfaz de la pregunta activa
     document.getElementById('host-progress-text').textContent = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
     document.getElementById('host-level-text').textContent = levelConfigs[q.level].name;
     document.getElementById('host-question-title').textContent = q.question;
     document.getElementById('host-answers-count').textContent = '0';
 
     renderQuestionOptionsForHost(q);
-    startHostTimer();
 
+    // 4. Sincronizar estado global en Firebase Realtime DB
     if (db) {
         db.ref('gameState').set({ status: 'question', qIndex: currentQuestionIndex });
+        
+        // Desenganchar listener previo y escuchar respuestas recibidas en tiempo real
+        db.ref('answers/' + currentQuestionIndex).off();
         db.ref('answers/' + currentQuestionIndex).on('value', snapshot => {
             const data = snapshot.val();
             const count = data ? Object.keys(data).length : 0;
             document.getElementById('host-answers-count').textContent = count;
         });
     }
+
+    // 5. Arrancar la cuenta regresiva
+    startHostTimer();
 }
 
 function startHostTimer() {
-    if (timer) {
-        clearInterval(timer);
-    }
+    if (timer) clearInterval(timer);
     timeLeft = 15;
     document.getElementById('host-timer-display').textContent = timeLeft;
 
@@ -310,40 +319,51 @@ function startHostTimer() {
     }, 1000);
 }
 
-// Evento directo sobre el botón "Reiniciar Partida" de la cabecera
+// Evento para el botón de reinicio en cabecera del Proyector
 document.getElementById('btn-host-reset-now').addEventListener('click', () => {
     if (confirm("🚨 ¿Deseas borrar las puntuaciones actuales y reiniciar el juego desde la Pregunta 1?")) {
         initHostGame();
     }
 });
 
-// ==========================================================================
-// [MÓDULO JS 8: Cálculo de Promedios, Carga de Banderas y Podio en Vivo]
-// ==========================================================================
 
+// ==========================================================================
+// [MÓDULO JS 8: Muestra de Resultados, Rotación de Banderas y Podio Intermedio]
+// ==========================================================================
 function showHostResults() {
+    if (timer) clearInterval(timer);
+
     const q = questions[currentQuestionIndex];
+    if (!q) {
+        renderGrandPodiumStage();
+        return;
+    }
+
+    // Cargar respuesta correcta y dato curioso
     document.getElementById('host-fact-text').textContent = q.fact;
     document.getElementById('host-correct-answer-text').textContent = q.options[q.answer];
 
-    // Rotación e intercambio inteligente de imágenes de banderas
+    // Rotación secuencial de imágenes de banderas
     const heroImg = document.getElementById('host-hero-img');
     if (heroImg) {
         const currentPath = flagImages[currentFlagIndex];
         heroImg.src = currentPath;
 
-        // Recuperación automática si el nombre del archivo en GitHub difiere en mayúsculas/minúsculas
         heroImg.onerror = function() {
-            if (this.src.includes("Bandera.png")) this.src = "Assets/bandera.png";
-            else if (this.src.includes("bandera.png")) this.src = "Assets/Bandera.png";
-            else if (this.src.includes("Bandera")) this.src = this.src.replace("Bandera", "bandera");
-            else if (this.src.includes("bandera")) this.src = this.src.replace("bandera", "Bandera");
+            this.onerror = null;
+            if (this.src.includes("Assets/Bandera")) {
+                this.src = this.src.replace("Assets/Bandera", "Assets/bandera");
+            } else if (this.src.includes("Assets/bandera")) {
+                this.src = this.src.replace("Assets/bandera", "assets/bandera");
+            } else {
+                this.src = "Assets/Bien.png";
+            }
         };
 
-        // Avanzar cíclicamente en el índice (0 a 5)
         currentFlagIndex = (currentFlagIndex + 1) % flagImages.length;
     }
 
+    // Sincronizar estado 'results' en Firebase y renderizar podio por promedios
     if (db) {
         db.ref('gameState').set({ status: 'results', qIndex: currentQuestionIndex });
         db.ref('players').once('value', snapshot => {
@@ -354,17 +374,17 @@ function showHostResults() {
         calculateAndRenderPodium({}, 'host-podium-list');
     }
 
+    // Desplegar modal de resultados en pantalla completa
     document.getElementById('modal-host-results').classList.remove('hidden');
 }
 
 function calculateTeamAverages(playersObject) {
-    const allTeams = ["Los Yigüirros", "Los Hijos de Lencho Salazar", "Los Tuanis", "Los de la Carreta"];
+    const allTeams = ["La Familia Torera", "Los Hijos de Lencho Salazar", "Los Tuanis", "Los de la Carreta"];
     const teamData = {};
     allTeams.forEach(t => teamData[t] = { totalScore: 0, count: 0, avg: 0 });
 
     Object.keys(playersObject).forEach(key => {
         const p = playersObject[key];
-        // Validar que el jugador tenga equipo asignado
         if (p && p.team && teamData[p.team]) {
             teamData[p.team].totalScore += (p.score || 0);
             teamData[p.team].count += 1;
@@ -407,14 +427,15 @@ function calculateAndRenderPodium(playersObject, containerId) {
     });
 }
 
-document.getElementById('btn-host-next-question').addEventListener('click', () => {
+// Control manual para avanzar a la siguiente pregunta o al Gran Podio Final
+document.getElementById('btn-host-next-question').onclick = () => {
     currentQuestionIndex++;
     if (currentQuestionIndex < questions.length) {
         renderHostQuestion();
     } else {
         renderGrandPodiumStage();
     }
-});
+};
 
 // [MÓDULO JS 9: Gran Podio Final 3D con Assets Exclusivos de Celebración]
 function renderGrandPodiumStage() {
