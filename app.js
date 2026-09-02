@@ -28,29 +28,6 @@ const levelConfigs = {
     3: { name: "🔴 NIVEL 3: MAESTRO DE LA PATRIA", points: 300 }
 };
 
-// 1. Imágenes estándar para selección de equipos y podio intermedio
-const teamImages = {
-    "Los Yigüirros": "Assets/yigui.png",
-    "Los Hijos de Lencho Salazar": "Assets/Los_hijos.png",
-    "Los Tuanis": "Assets/Tuanis.png",
-    "Los de la Carreta": "Assets/Carreta.png"
-};
-
-// 2. Imágenes de celebración exclusivas para los peldaños del Podio Final
-const podiumCelebrationImages = {
-    "Los Yigüirros": "Assets/pajaro.png",
-    "Los Hijos de Lencho Salazar": "Assets/hijos.png",
-    "Los Tuanis": "Assets/porcio.png",
-    "Los de la Carreta": "Assets/guaro.png"
-};
-
-const kahootStyles = [
-    { class: 'btn-red', icon: '▲' },
-    { class: 'btn-blue', icon: '◆' },
-    { class: 'btn-yellow', icon: '●' },
-    { class: 'btn-green', icon: '◼' }
-];
-
 // ==========================================================================
 // [MÓDULO JS 2: Variables de Estado Global, Assets y Secuencia de Banderas]
 // ==========================================================================
@@ -64,9 +41,39 @@ let timer = null;
 let timeLeft = 15;
 let confettiAnimationId = null;
 
-// Índice de control para rotar imágenes de banderas
-let currentFlagIndex = 0;
+// Control global de rotación de banderas (Requerido para el Módulo 8)
+var currentFlagIndex = 0;
+var flagImages = [
+    "Assets/Bandera.png",
+    "Assets/Bandera2.png",
+    "Assets/Bandera3.png",
+    "Assets/Bandera4.png",
+    "Assets/Bandera5.png",
+    "Assets/Bandera6.png"
+];
 
+// Mapeo oficial de equipos y avatares de la empresa
+const teamImages = {
+    "La Familia Torera": "Assets/yigui.png",
+    "Los Hijos de Lencho Salazar": "Assets/Los_hijos.png",
+    "Los Tuanis": "Assets/Tuanis.png",
+    "Los de la Carreta": "Assets/Carreta.png"
+};
+
+// Avatares para el Gran Podio Final
+const podiumCelebrationImages = {
+    "La Familia Torera": "Assets/pajaro.png",
+    "Los Hijos de Lencho Salazar": "Assets/hijos.png",
+    "Los Tuanis": "Assets/porcio.png",
+    "Los de la Carreta": "Assets/guaro.png"
+};
+
+const kahootStyles = [
+    { class: 'btn-red', icon: '▲' },
+    { class: 'btn-blue', icon: '◆' },
+    { class: 'btn-yellow', icon: '●' },
+    { class: 'btn-green', icon: '◼' }
+];
 // [MÓDULO JS 3: Inicialización Firebase DB Sync - Producción Realtime]
 const firebaseConfig = {
     apiKey: "AIzaSyC4Tnc_Gi8XQf2wDvBPA8L0B2iRye-23cI",
@@ -339,13 +346,13 @@ function showHostResults() {
         return;
     }
 
-    // Cargar respuesta correcta y dato curioso
+    // 1. Mostrar respuesta correcta y dato curioso
     document.getElementById('host-fact-text').textContent = q.fact;
     document.getElementById('host-correct-answer-text').textContent = q.options[q.answer];
 
-    // Rotación secuencial de imágenes de banderas
+    // 2. Rotación segura de banderas con protección contra errores
     const heroImg = document.getElementById('host-hero-img');
-    if (heroImg) {
+    if (heroImg && typeof flagImages !== 'undefined' && flagImages.length > 0) {
         const currentPath = flagImages[currentFlagIndex];
         heroImg.src = currentPath;
 
@@ -363,7 +370,7 @@ function showHostResults() {
         currentFlagIndex = (currentFlagIndex + 1) % flagImages.length;
     }
 
-    // Sincronizar estado 'results' en Firebase y renderizar podio por promedios
+    // 3. Notificar cambio de estado a Firebase y renderizar tabla de posiciones
     if (db) {
         db.ref('gameState').set({ status: 'results', qIndex: currentQuestionIndex });
         db.ref('players').once('value', snapshot => {
@@ -374,8 +381,11 @@ function showHostResults() {
         calculateAndRenderPodium({}, 'host-podium-list');
     }
 
-    // Desplegar modal de resultados en pantalla completa
-    document.getElementById('modal-host-results').classList.remove('hidden');
+    // 4. Desplegar ventana modal de resultados
+    const modalResults = document.getElementById('modal-host-results');
+    if (modalResults) {
+        modalResults.classList.remove('hidden');
+    }
 }
 
 function calculateTeamAverages(playersObject) {
@@ -405,6 +415,8 @@ function calculateTeamAverages(playersObject) {
 function calculateAndRenderPodium(playersObject, containerId) {
     const sortedTeams = calculateTeamAverages(playersObject);
     const podiumContainer = document.getElementById(containerId);
+    if (!podiumContainer) return;
+
     podiumContainer.innerHTML = '';
     const medals = ["🥇", "🥈", "🥉", "4️⃣"];
 
@@ -427,15 +439,18 @@ function calculateAndRenderPodium(playersObject, containerId) {
     });
 }
 
-// Control manual para avanzar a la siguiente pregunta o al Gran Podio Final
-document.getElementById('btn-host-next-question').onclick = () => {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-        renderHostQuestion();
-    } else {
-        renderGrandPodiumStage();
-    }
-};
+// Escuchar avance de pantalla hacia la siguiente pregunta
+const btnNextQ = document.getElementById('btn-host-next-question');
+if (btnNextQ) {
+    btnNextQ.onclick = () => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            renderHostQuestion();
+        } else {
+            renderGrandPodiumStage();
+        }
+    };
+}
 
 // [MÓDULO JS 9: Gran Podio Final 3D con Assets Exclusivos de Celebración]
 function renderGrandPodiumStage() {
